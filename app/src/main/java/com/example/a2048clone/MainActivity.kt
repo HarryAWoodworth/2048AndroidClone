@@ -2,9 +2,11 @@ package com.example.a2048clone
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.view.GestureDetector
+import android.view.MotionEvent
 import android.view.View
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), GestureDetector.OnGestureListener {
 
     // Game singleton instance
     val game = Game
@@ -32,4 +34,16 @@ class MainActivity : AppCompatActivity() {
                         or View.SYSTEM_UI_FLAG_FULLSCREEN
                         or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
     }
+
+    override fun onShowPress(p0: MotionEvent?) {}
+    override fun onLongPress(p0: MotionEvent?) {}
+    override fun onSingleTapUp(p0: MotionEvent?): Boolean { return true }
+    override fun onDown(p0: MotionEvent?): Boolean { return true }
+
+    override fun onFling(p0: MotionEvent?, p1: MotionEvent?, p2: Float, p3: Float): Boolean
+    {
+
+    }
+
+    override fun onScroll(p0: MotionEvent?, p1: MotionEvent?, p2: Float, p3: Float): Boolean { return true }
 }
