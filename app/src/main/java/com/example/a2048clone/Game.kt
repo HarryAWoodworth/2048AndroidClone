@@ -43,12 +43,13 @@ object Game
     // Move the tile in a direction passed as an argument. The value of the previous tile before this
     // one is passed in as well, or if there was no previous tile then it is the DEFAULT_VALUE.
     // Calls Move() on the next tile as well, causing a chain reaction in the direction of the movement.
-    fun move(tile: Tile, direction : Direction, incomingValue : Int = 0)
+    fun move(context : MainActivity, tile: Tile, direction : Direction, incomingValue : Int = 0)
     {
         // Calculate new value
         tile.value += incomingValue
 
         // UI Update
+        context.updateUI()
 
         // Return if this tile has the default value
         // Saves time going over empty tiles that don't need to move
@@ -64,18 +65,21 @@ object Game
         // Return if the tiles can't combine
         if(nextTile.value != 0 && nextTile.value != tile.value) { return }
 
-        // Animate Go \\
+        // Animate Go
+        // context.animateTileGo(tile, direction)
 
         // Save value to send to next tile and set this tile's value to the default value
         val sentValue = tile.value
         tile.value = DEFAULT_VALUE
 
         // UI Update
+        context.updateUI()
 
-        // Animate Back \\
+        // Animate Back
+        // context.animateTileBack(tile, direction)
 
         // Call move on the next tile
-        move(nextTile, direction, sentValue)
+        move(context, nextTile, direction, sentValue)
     }
 
     // Return the next tile from the matrix based on the previous tile
@@ -114,26 +118,55 @@ object Game
         return matrix[newY][newX]
     }
 
-    // Swipe functions
+    // Return the value of the tile at the coordinates in the matrix
+    fun getTileValue(y: Int, x: Int) : Int
+    {
+        return matrix[y][x].value
+    }
 
-    fun leftSwipe(context : Context)
+    // Swipe functions \\
+
+    fun leftSwipe(context : MainActivity)
     {
-        context as MainActivity
-        context.setTestText("left")
+        for(col in 0..3)
+        {
+            for(row in 0..3)
+            {
+                move(context,matrix[row][col],Direction.LEFT)
+            }
+        }
     }
-    fun rightSwipe(context : Context)
+
+    fun rightSwipe(context : MainActivity)
     {
-        context as MainActivity
-        context.setTestText("right")
+        for(col in 3 downTo 0)
+        {
+            for(row in 0..3)
+            {
+                move(context,matrix[row][col],Direction.RIGHT)
+            }
+        }
     }
-    fun upSwipe(context : Context)
+
+    fun upSwipe(context : MainActivity)
     {
-        context as MainActivity
-        context.setTestText("up")
+        for(row in 0..3)
+        {
+            for(col in 0..3)
+            {
+                move(context,matrix[row][col],Direction.UP)
+            }
+        }
     }
-    fun downSwipe(context : Context)
+
+    fun downSwipe(context : MainActivity)
     {
-        context as MainActivity
-        context.setTestText("down")
+        for(row in 3 downTo 0)
+        {
+            for(col in 0..3)
+            {
+                move(context,matrix[row][col],Direction.DOWN)
+            }
+        }
     }
 }

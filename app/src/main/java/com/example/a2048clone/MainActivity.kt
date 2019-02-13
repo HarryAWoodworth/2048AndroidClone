@@ -8,14 +8,10 @@ import android.view.View
 import kotlinx.android.synthetic.main.activity_main.*
 import android.view.GestureDetector
 import android.view.MotionEvent
+import android.widget.Button
 
 // Debug tag
 private const val TAG = "MainActivity"
-
-// Constants to determine the sensitivity of swipes related to distance, speed, and x/y offset
-private const val SWIPE_MIN_DISTANCE = 120
-private const val SWIPE_MAX_OFF_PATH = 250
-private const val SWIPE_THRESHOLD_VELOCITY = 200
 
 class MainActivity : AppCompatActivity(),
                      GestureDetector.OnGestureListener,
@@ -25,7 +21,9 @@ class MainActivity : AppCompatActivity(),
     private lateinit var mDetector: GestureDetectorCompat
 
     // Game singleton instance
-    val game = Game
+    private val game = Game
+
+    private lateinit var board : Array< Array<Button> >
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,6 +34,16 @@ class MainActivity : AppCompatActivity(),
 
         // Hide the UI
         hideUI()
+
+        // Create View Matrix for board
+        val row0 = arrayOf(textView0,textView1,textView2,textView3)
+        val row1 = arrayOf(textView4,textView5,textView6,textView7)
+        val row2 = arrayOf(textView8,textView9,textView10,textView11)
+        val row3 = arrayOf(textView12,textView13,textView14,textView15)
+        board = arrayOf(row0,row1,row2,row3)
+
+        // Set the initial UI
+        updateUI()
 
         // Instantiate the gesture detector with the
         // application context and an implementation of
@@ -60,7 +68,18 @@ class MainActivity : AppCompatActivity(),
                         or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
     }
 
-    fun setTestText(string : String) { testTextView.text = string }
+    // Update the UI
+    fun updateUI()
+    {
+        for(row in 0..3)
+        {
+            for(col in 0..3)
+            {
+                val str = "" + game.getTileValue(row,col)
+                board[row][col].text = str
+            }
+        }
+    }
 
     // Override the onTouchEven to send it to mDetector
     override fun onTouchEvent(event: MotionEvent): Boolean {
@@ -74,7 +93,8 @@ class MainActivity : AppCompatActivity(),
     // Detect the direction of a swipe motion from the user
     override fun onFling(swipe1: MotionEvent?, swipe2: MotionEvent?, velocityX: Float, velocityY: Float): Boolean
     {
-        when(getSlope(swipe1!!.x,swipe1!!.y,swipe2!!.x,swipe2!!.y))
+        // Determine the direction using the getSlope method
+        when(getSlope(swipe1!!.x, swipe1.y, swipe2!!.x,swipe2.y))
         {
             1 -> {
                 game.upSwipe(this)
@@ -99,6 +119,10 @@ class MainActivity : AppCompatActivity(),
     }
 
     // Slope finder helper method
+    // 1 -> Up
+    // 2 -> Left
+    // 3 -> Down
+    // 4 -> Right
     private fun getSlope(x1: Float, y1: Float, x2: Float, y2: Float): Int
     {
         val angle = Math.toDegrees(Math.atan2((y1 - y2).toDouble(), (x2 - x1).toDouble()))
@@ -122,5 +146,4 @@ class MainActivity : AppCompatActivity(),
     override fun onDoubleTap(p0: MotionEvent?): Boolean { return true }
     override fun onDoubleTapEvent(p0: MotionEvent?): Boolean { return true }
     override fun onSingleTapConfirmed(p0: MotionEvent?): Boolean { return true }
-
 }
