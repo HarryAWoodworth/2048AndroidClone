@@ -1,11 +1,13 @@
 package com.example.a2048clone
 
+import android.content.Context
+
 // Game is a singleton object that instantiates a Tile matrix.
 // Also has a method for assisting Tile movement.
 object Game
 {
     // Matrix holding the Tiles
-    var matrix : Array< Array<Tile> >
+    private var matrix : Array< Array<Tile> >
 
     // Initialize matrix
     init
@@ -79,7 +81,7 @@ object Game
     // Return the next tile from the matrix based on the previous tile
     // Returns a tile with -1 coordinates and values if the tile passed in is
     // and edge tile.
-    fun nextTile(tile: Tile, direction: Direction) : Tile
+    private fun nextTile(tile: Tile, direction: Direction) : Tile
     {
         val newY : Int
         val newX : Int
@@ -110,5 +112,28 @@ object Game
 
         // Return the valid Tile
         return matrix[newY][newX]
+    }
+
+    // Swipe functions
+
+    fun leftSwipe(context : Context)
+    {
+        context as MainActivity
+        context.setTestText("left")
+    }
+    fun rightSwipe(context : Context)
+    {
+        context as MainActivity
+        context.setTestText("right")
+    }
+    fun upSwipe(context : Context)
+    {
+        context as MainActivity
+        context.setTestText("up")
+    }
+    fun downSwipe(context : Context)
+    {
+        context as MainActivity
+        context.setTestText("down")
     }
 }
