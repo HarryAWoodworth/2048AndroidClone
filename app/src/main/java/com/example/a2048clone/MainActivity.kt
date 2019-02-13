@@ -1,6 +1,7 @@
 package com.example.a2048clone
 
 import android.content.SharedPreferences
+import android.graphics.Color
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.view.GestureDetectorCompat
@@ -96,6 +97,7 @@ class MainActivity : AppCompatActivity(),
         var value = 0
         var cumulativeValue = 0
         var str = ""
+
         // Update the board values based on the game Tile matrix
         for(row in 0..3)
         {
@@ -104,17 +106,36 @@ class MainActivity : AppCompatActivity(),
                 value = game.getTileValue(row,col)
                 cumulativeValue += value
                 str = "" + value
+
+                // Set the text and the color
                 board[row][col].text = str
+
+                when(value)
+                {
+                    0 -> { board[row][col].setBackgroundColor(Color.WHITE) }
+                    2 -> { board[row][col].setBackgroundColor(Color.rgb(239, 224, 252)) }
+                    4 -> { board[row][col].setBackgroundColor(Color.rgb(220, 190, 247)) }
+                    8 -> { board[row][col].setBackgroundColor(Color.rgb(186, 137, 229)) }
+                    16 -> { board[row][col].setBackgroundColor(Color.rgb(157,101,206))}
+                    32 -> { board[row][col].setBackgroundColor(Color.rgb(145,80,201))}
+                    64 -> { board[row][col].setBackgroundColor(Color.rgb(132,62,193))}
+                    128 -> { board[row][col].setBackgroundColor(Color.rgb(107,37,168))}
+                    256 -> { board[row][col].setBackgroundColor(Color.rgb(81,8,145))}
+                    512 -> { board[row][col].setBackgroundColor(Color.rgb(62,3,114))}
+                    1024 -> { board[row][col].setBackgroundColor(Color.rgb(32,0,61))}
+                    2048 -> { board[row][col].setBackgroundColor(Color.rgb(17,0,33))}
+                    else -> { board[row][col].setBackgroundColor(Color.BLACK)}
+                }
             }
         }
 
         // Update score
-        str = "Score: " + cumulativeValue
+        str = "Score: $cumulativeValue"
         scoreView.text = str
 
         // Update high score
         if(cumulativeValue > highScore) { highScore = cumulativeValue }
-        str = "High Score: " + highScore
+        str = "High Score: $highScore"
         highScoreView.text = str
     }
 

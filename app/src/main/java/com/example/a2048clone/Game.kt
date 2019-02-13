@@ -206,8 +206,13 @@ object Game
         {
             for(col in 0..3)
             {
-                // Get the current tile and neighboring tiles
+                // Get the current tile
                 val currentTileValue = matrix[row][col].value
+
+                // Return if there is an empty space
+                if(currentTileValue == DEFAULT_VALUE) { return }
+
+                // Get neighboring tiles
                 val tileArr = arrayOf(
                     nextTile(matrix[row][col],Direction.LEFT),
                     nextTile(matrix[row][col],Direction.RIGHT),
@@ -217,7 +222,7 @@ object Game
 
                 // Check if there is a possible tile merge, if so return
                 for(tile in tileArr) {
-                    if(tile.value == currentTileValue) { return }
+                    if(currentTileValue == tile.value) { return }
                 }
             }
         }
