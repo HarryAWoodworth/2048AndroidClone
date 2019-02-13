@@ -1,13 +1,16 @@
 package com.example.a2048clone
 
-import android.content.Context
-
-// Game is a singleton object that instantiates a Tile matrix.
-// Also has a method for assisting Tile movement.
+/**
+ * Game is a singleton object that instantiates a Tile matrix.
+ * Also has a method for assisting Tile movement, and functions
+ * called by MainActivity when directional swipes are detected,
+ * causing a reverse waterfall effect in moving tiles and combining
+ * their values
+ */
 object Game
 {
     // Matrix holding the Tiles
-    private var matrix : Array< Array<Tile> >
+    var matrix : Array< Array<Tile> >
 
     // Initialize matrix
     init

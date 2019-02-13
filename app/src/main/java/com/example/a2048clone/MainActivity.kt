@@ -1,5 +1,6 @@
 package com.example.a2048clone
 
+import android.content.SharedPreferences
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.view.GestureDetectorCompat
@@ -13,6 +14,16 @@ import android.widget.Button
 // Debug tag
 private const val TAG = "MainActivity"
 
+private const val SHARED_PREFERENCES_TAG = "MainActivity2048SharedPreferences"
+private const val HIGH_SCORE_TAG = "HighScore"
+
+/**
+ * A FullScreen activity that holds a board of buttons that it populates
+ * with a singleton instance of the Game class. It also keeps current score
+ * and a high score that is loaded by shared preferences in onCreate() and
+ * saved in onStop(). Detects swipe gestures and calls the appropriate functions
+ * in the Game instace, and calls updateUI to render the new values of the board.
+ */
 class MainActivity : AppCompatActivity(),
                      GestureDetector.OnGestureListener,
                      GestureDetector.OnDoubleTapListener
@@ -23,7 +34,14 @@ class MainActivity : AppCompatActivity(),
     // Game singleton instance
     private val game = Game
 
+    // 2D array of Button Views representing the board
     private lateinit var board : Array< Array<Button> >
+
+    // High score
+    private var highScore : Int = 0
+
+    // Shared Preference instance
+    lateinit var prefs : SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,12 +53,22 @@ class MainActivity : AppCompatActivity(),
         // Hide the UI
         hideUI()
 
+        // Retrieve the High Score (default value of 0)
+        prefs = this.getSharedPreferences(SHARED_PREFERENCES_TAG, 0)
+        highScore = prefs.getInt(HIGH_SCORE_TAG,0)
+
+
         // Create View Matrix for board
         val row0 = arrayOf(textView0,textView1,textView2,textView3)
         val row1 = arrayOf(textView4,textView5,textView6,textView7)
         val row2 = arrayOf(textView8,textView9,textView10,textView11)
         val row3 = arrayOf(textView12,textView13,textView14,textView15)
         board = arrayOf(row0,row1,row2,row3)
+
+        /** TEST **/
+        //game.matrix[2][2].value = 2
+        //game.matrix[0][2].value = 2
+        /** TEST **/
 
         // Set the initial UI
         updateUI()
@@ -71,14 +99,29 @@ class MainActivity : AppCompatActivity(),
     // Update the UI
     fun updateUI()
     {
+        var value = 0
+        var cumulativeValue = 0
+        var str = ""
+        // Update the board values based on the game Tile matrix
         for(row in 0..3)
         {
             for(col in 0..3)
             {
-                val str = "" + game.getTileValue(row,col)
+                value = game.getTileValue(row,col)
+                cumulativeValue += value
+                str = "" + value
                 board[row][col].text = str
             }
         }
+
+        // Update score
+        str = "Score: " + cumulativeValue
+        scoreView.text = str
+
+        // Update high score
+        if(cumulativeValue > highScore) { highScore = cumulativeValue }
+        str = "High Score: " + highScore
+        highScoreView.text = str
     }
 
     // Override the onTouchEven to send it to mDetector
@@ -94,24 +137,12 @@ class MainActivity : AppCompatActivity(),
     override fun onFling(swipe1: MotionEvent?, swipe2: MotionEvent?, velocityX: Float, velocityY: Float): Boolean
     {
         // Determine the direction using the getSlope method
-        when(getSlope(swipe1!!.x, swipe1.y, swipe2!!.x,swipe2.y))
+        when(getSlope(swipe1!!.x, swipe1.y, swipe2!!.x, swipe2.y))
         {
-            1 -> {
-                game.upSwipe(this)
-                Log.d(TAG, "MAIN_ACT: UP SWIPE")
-            }
-            2 -> {
-                game.leftSwipe(this)
-                Log.d(TAG, "MAIN_ACT: LEFT SWIPE")
-            }
-            3 -> {
-                game.downSwipe(this)
-                Log.d(TAG, "MAIN_ACT: DOWN SWIPE")
-            }
-            4 -> {
-                game.rightSwipe(this)
-                Log.d(TAG, "MAIN_ACT: RIGHT SWIPE")
-            }
+            1 -> { game.upSwipe(this) }
+            2 -> { game.leftSwipe(this) }
+            3 -> { game.downSwipe(this) }
+            4 -> { game.rightSwipe(this) }
         }
 
         // We return false because we don't want the event to be consumed
@@ -146,4 +177,14 @@ class MainActivity : AppCompatActivity(),
     override fun onDoubleTap(p0: MotionEvent?): Boolean { return true }
     override fun onDoubleTapEvent(p0: MotionEvent?): Boolean { return true }
     override fun onSingleTapConfirmed(p0: MotionEvent?): Boolean { return true }
+
+    // Override onStop() to save our high score
+    override fun onStop() {
+        super.onStop()
+
+        // Save the high score
+        val editor = prefs.edit()
+        editor.putInt(HIGH_SCORE_TAG, highScore)
+        editor.apply()
+    }
 }
