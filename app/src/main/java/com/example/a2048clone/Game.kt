@@ -1,5 +1,14 @@
 package com.example.a2048clone
 
+// Enum for swipe directions
+enum class Direction
+{
+    UP, DOWN, LEFT, RIGHT
+}
+
+// Default value of tile
+const val DEFAULT_VALUE = 0
+
 /**
  * Game is a singleton object that instantiates a Tile matrix.
  * Also has a method for assisting Tile movement, and functions
@@ -46,7 +55,7 @@ object Game
     // Move the tile in a direction passed as an argument. The value of the previous tile before this
     // one is passed in as well, or if there was no previous tile then it is the DEFAULT_VALUE.
     // Calls Move() on the next tile as well, causing a chain reaction in the direction of the movement.
-    fun move(context : MainActivity, tile: Tile, direction : Direction, incomingValue : Int = 0)
+    private fun move(context : MainActivity, tile: Tile, direction : Direction, incomingValue : Int = 0)
     {
         // Calculate new value
         tile.value += incomingValue

@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity(),
     private var highScore : Int = 0
 
     // Shared Preference instance
-    lateinit var prefs : SharedPreferences
+    private lateinit var prefs : SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -94,9 +94,9 @@ class MainActivity : AppCompatActivity(),
     // Update the UI
     fun updateUI()
     {
-        var value = 0
+        var value : Int
         var cumulativeValue = 0
-        var str = ""
+        var str : String
 
         // Update the board values based on the game Tile matrix
         for(row in 0..3)
