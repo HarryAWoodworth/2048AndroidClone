@@ -131,54 +131,46 @@ object Game
 
     fun leftSwipe(context : MainActivity)
     {
-        for(col in 0..3)
-        {
-            for(row in 0..3)
-            {
+        for(col in 0..3) {
+            for(row in 0..3) {
                 move(context,matrix[row][col],Direction.LEFT)
             }
         }
-
         generateRandomTile(context)
+        checkLoseCondition(context)
     }
 
     fun rightSwipe(context : MainActivity)
     {
-        for(col in 3 downTo 0)
-        {
-            for(row in 0..3)
-            {
+        for(col in 3 downTo 0) {
+            for(row in 0..3) {
                 move(context,matrix[row][col],Direction.RIGHT)
             }
         }
-
         generateRandomTile(context)
+        checkLoseCondition(context)
     }
 
     fun upSwipe(context : MainActivity)
     {
-        for(row in 0..3)
-        {
-            for(col in 0..3)
-            {
+        for(row in 0..3) {
+            for(col in 0..3) {
                 move(context,matrix[row][col],Direction.UP)
             }
         }
-
         generateRandomTile(context)
+        checkLoseCondition(context)
     }
 
     fun downSwipe(context : MainActivity)
     {
-        for(row in 3 downTo 0)
-        {
-            for(col in 0..3)
-            {
+        for(row in 3 downTo 0) {
+            for(col in 0..3) {
                 move(context,matrix[row][col],Direction.DOWN)
             }
         }
-
         generateRandomTile(context)
+        checkLoseCondition(context)
     }
 
     // Generate a random value from possibleSpawnValues and put it on a random
@@ -205,4 +197,45 @@ object Game
         // Update the UI
         context.updateUI()
     }
+
+    // Return true if there is a possible merge, false otherwise
+    private fun checkLoseCondition(context : MainActivity)
+    {
+        // Search through each tile
+        for(row in 0..3)
+        {
+            for(col in 0..3)
+            {
+                // Get the current tile and neighboring tiles
+                val currentTileValue = matrix[row][col].value
+                val tileArr = arrayOf(
+                    nextTile(matrix[row][col],Direction.LEFT),
+                    nextTile(matrix[row][col],Direction.RIGHT),
+                    nextTile(matrix[row][col],Direction.UP),
+                    nextTile(matrix[row][col],Direction.DOWN)
+                )
+
+                // Check if there is a possible tile merge, if so return
+                for(tile in tileArr) {
+                    if(tile.value == currentTileValue) { return }
+                }
+            }
+        }
+
+        // Player lost, so reset all tiles to default
+        for(row in 0..3){
+            for(col in 0..3) {
+                matrix[row][col].value = DEFAULT_VALUE
+            }
+        }
+
+        startGame(context)
+    }
+
+    fun startGame(context: MainActivity)
+    {
+        generateRandomTile(context)
+        generateRandomTile(context)
+    }
+
 }
