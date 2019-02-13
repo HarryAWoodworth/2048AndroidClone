@@ -61,12 +61,10 @@ class MainActivity : AppCompatActivity(),
         val row3 = arrayOf(textView12,textView13,textView14,textView15)
         board = arrayOf(row0,row1,row2,row3)
 
-        /** TEST **/
-        //game.matrix[2][2].value = 2
-        //game.matrix[0][2].value = 2
-        /** TEST **/
+        // Start the game by generating two random tiles
+        game.startGame(this)
 
-        // Set the initial UI
+        // Set initial UI
         updateUI()
 
         // Instantiate the gesture detector with the
