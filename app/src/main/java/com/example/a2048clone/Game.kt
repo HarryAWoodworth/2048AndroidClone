@@ -10,7 +10,7 @@ package com.example.a2048clone
 object Game
 {
     // Matrix holding the Tiles
-    var matrix : Array< Array<Tile> >
+    private var matrix : Array< Array<Tile> >
 
     // Initialize matrix
     init
@@ -138,6 +138,8 @@ object Game
                 move(context,matrix[row][col],Direction.LEFT)
             }
         }
+
+        generateRandomTile(context)
     }
 
     fun rightSwipe(context : MainActivity)
@@ -149,6 +151,8 @@ object Game
                 move(context,matrix[row][col],Direction.RIGHT)
             }
         }
+
+        generateRandomTile(context)
     }
 
     fun upSwipe(context : MainActivity)
@@ -160,6 +164,8 @@ object Game
                 move(context,matrix[row][col],Direction.UP)
             }
         }
+
+        generateRandomTile(context)
     }
 
     fun downSwipe(context : MainActivity)
@@ -171,5 +177,32 @@ object Game
                 move(context,matrix[row][col],Direction.DOWN)
             }
         }
+
+        generateRandomTile(context)
+    }
+
+    // Generate a random value from possibleSpawnValues and put it on a random
+    // tile that is set to Default Value
+    private fun generateRandomTile(context: MainActivity)
+    {
+        val possibleSpawnValues = arrayOf(2,4)
+
+        var randomY = (0..3).random()
+        var randomX = (0..3).random()
+        var tileAdded = false
+
+        while(!tileAdded)
+        {
+            if(matrix[randomY][randomX].value == DEFAULT_VALUE)
+            {
+                matrix[randomY][randomX].value = possibleSpawnValues[(0..(possibleSpawnValues.size-1)).random()]
+                tileAdded = true
+            }
+            randomY = (0..3).random()
+            randomX = (0..3).random()
+        }
+
+        // Update the UI
+        context.updateUI()
     }
 }

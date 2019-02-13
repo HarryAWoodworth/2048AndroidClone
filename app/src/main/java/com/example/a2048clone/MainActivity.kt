@@ -4,15 +4,11 @@ import android.content.SharedPreferences
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.view.GestureDetectorCompat
-import android.util.Log
 import android.view.View
 import kotlinx.android.synthetic.main.activity_main.*
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.widget.Button
-
-// Debug tag
-private const val TAG = "MainActivity"
 
 private const val SHARED_PREFERENCES_TAG = "MainActivity2048SharedPreferences"
 private const val HIGH_SCORE_TAG = "HighScore"
