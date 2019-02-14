@@ -1,5 +1,7 @@
 package com.example.a2048clone
 
+import android.util.Log
+
 // Enum for swipe directions
 enum class Direction
 {
@@ -18,6 +20,8 @@ const val DEFAULT_VALUE = 0
  */
 object Game
 {
+    private var gameEnd = false
+
     // Matrix holding the Tiles
     private var matrix : Array< Array<Tile> >
 
@@ -77,18 +81,12 @@ object Game
         // Return if the tiles can't combine
         if(nextTile.value != 0 && nextTile.value != tile.value) { return }
 
-        // Animate Go
-        // context.animateTileGo(tile, direction)
-
         // Save value to send to next tile and set this tile's value to the default value
         val sentValue = tile.value
         tile.value = DEFAULT_VALUE
 
         // UI Update
         context.updateUI()
-
-        // Animate Back
-        // context.animateTileBack(tile, direction)
 
         // Call move on the next tile
         move(context, nextTile, direction, sentValue)
@@ -140,52 +138,64 @@ object Game
 
     fun leftSwipe(context : MainActivity)
     {
-        for(col in 0..3) {
-            for(row in 0..3) {
-                move(context,matrix[row][col],Direction.LEFT)
+        if(!gameEnd) {
+            for (col in 0..3) {
+                for (row in 0..3) {
+                    move(context, matrix[row][col], Direction.LEFT)
+                }
             }
+            generateRandomTile(context)
+            checkLoseCondition(context)
         }
-        generateRandomTile(context)
-        checkLoseCondition(context)
     }
 
     fun rightSwipe(context : MainActivity)
     {
-        for(col in 3 downTo 0) {
-            for(row in 0..3) {
-                move(context,matrix[row][col],Direction.RIGHT)
+        if(!gameEnd) {
+            for (col in 3 downTo 0) {
+                for (row in 0..3) {
+                    move(context, matrix[row][col], Direction.RIGHT)
+                }
             }
+            generateRandomTile(context)
+            checkLoseCondition(context)
         }
-        generateRandomTile(context)
-        checkLoseCondition(context)
     }
 
     fun upSwipe(context : MainActivity)
     {
-        for(row in 0..3) {
-            for(col in 0..3) {
-                move(context,matrix[row][col],Direction.UP)
+        if(!gameEnd) {
+            for (row in 0..3) {
+                for (col in 0..3) {
+                    move(context, matrix[row][col], Direction.UP)
+                }
             }
+            generateRandomTile(context)
+            checkLoseCondition(context)
         }
-        generateRandomTile(context)
-        checkLoseCondition(context)
     }
 
     fun downSwipe(context : MainActivity)
     {
-        for(row in 3 downTo 0) {
-            for(col in 0..3) {
-                move(context,matrix[row][col],Direction.DOWN)
+        if(!gameEnd) {
+            for (row in 3 downTo 0) {
+                for (col in 0..3) {
+                    move(context, matrix[row][col], Direction.DOWN)
+                }
             }
+            generateRandomTile(context)
+            checkLoseCondition(context)
         }
-        generateRandomTile(context)
-        checkLoseCondition(context)
     }
+
 
     // Generate a random value from possibleSpawnValues and put it on a random
     // tile that is set to Default Value
     private fun generateRandomTile(context: MainActivity)
     {
+        // Return if there is no empty space
+        if(!hasEmptySpace()){return}
+
         val possibleSpawnValues = arrayOf(2,4)
 
         var randomY = (0..3).random()
@@ -236,20 +246,39 @@ object Game
             }
         }
 
-        // Player lost, so reset all tiles to default
+        // The game is over
+        this.gameEnd = true
+
+        // Display lost text and button
+        context.displayLost()
+    }
+
+    // Set all the tiles to default and then generate two random tiles
+    fun startGame(context: MainActivity)
+    {
+        this.gameEnd = false
+
+        // Reset all tiles to default
         for(row in 0..3){
             for(col in 0..3) {
                 matrix[row][col].value = DEFAULT_VALUE
             }
         }
 
-        startGame(context)
+        generateRandomTile(context)
+        generateRandomTile(context)
     }
 
-    fun startGame(context: MainActivity)
+    // Helper method for finding if there is a free spot on the board
+    private fun hasEmptySpace() : Boolean
     {
-        generateRandomTile(context)
-        generateRandomTile(context)
+        for(row in 0..3) {
+            for(col in 0..3) {
+                if(matrix[row][col].value == DEFAULT_VALUE) { return true }
+            }
+        }
+        return false
     }
+
 
 }

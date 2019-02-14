@@ -10,6 +10,13 @@ import kotlinx.android.synthetic.main.activity_main.*
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.widget.Button
+import android.R.attr.button
+import android.R.attr.start
+import android.opengl.Visibility
+import android.util.Log
+import android.view.animation.TranslateAnimation
+
+
 
 private const val SHARED_PREFERENCES_TAG = "MainActivity2048SharedPreferences"
 private const val HIGH_SCORE_TAG = "HighScore"
@@ -96,7 +103,7 @@ class MainActivity : AppCompatActivity(),
     {
         var value : Int
         var cumulativeValue = 0
-        var str : String
+        var str = ""
 
         // Update the board values based on the game Tile matrix
         for(row in 0..3)
@@ -105,7 +112,14 @@ class MainActivity : AppCompatActivity(),
             {
                 value = game.getTileValue(row,col)
                 cumulativeValue += value
-                str = "" + value
+
+                // Reset string
+                str = ""
+
+                // Set string to value if it isn't the default
+                if(value != DEFAULT_VALUE) {
+                    str = "" + value
+                }
 
                 // Set the text and the color
                 board[row][col].text = str
@@ -137,6 +151,27 @@ class MainActivity : AppCompatActivity(),
         if(cumulativeValue > highScore) { highScore = cumulativeValue }
         str = "High Score: $highScore"
         highScoreView.text = str
+    }
+
+    // Display the textView and button after player loss
+    fun displayLost()
+    {
+        // Make the text Visible
+        lostTextView.text = "You Lost!"
+    }
+
+    private fun hideLostDisplay()
+    {
+        // Make the text Invisible
+        lostTextView.text = ""
+    }
+
+    // Restart the game
+    fun restartGame(view: View)
+    {
+        Log.d("MAIN_ACTIVITY","MAIN_ACTIVITY: restartGame called")
+        hideLostDisplay()
+        game.startGame(this)
     }
 
     // Override the onTouchEven to send it to mDetector
